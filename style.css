@@ -4,12 +4,55 @@ body {
     color: #E0E0E0;
 }
 
+.ripple {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    transform: scale(0);
+    animation: rippleAnim 0.5s ease-out;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes rippleAnim {
+    to {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+/* Ensure ripple doesn't break layout */
+.expandable-card {
+    position: relative;
+    overflow: hidden;
+}
+
 .hero-gradient-text {
-    background-image: linear-gradient(to right, #4facfe, #00f2fe);
+    background-image: linear-gradient(270deg, #4facfe, #00f2fe, #8e2de2, #4a00e0);
+    background-size: 600% 600%;
+    animation: gradientShift 8s ease infinite;
 }
 
 .section-title-gradient {
-    background-image: linear-gradient(to right, #8e2de2, #4a00e0);
+  background-image: linear-gradient(270deg, #004D40, #00C853, #1DE9B6, #00796B, #4facfe, #00f2fe, #8e2de2, #4a00e0);
+  background-size: 800% 600%;
+  animation: gradientShift 12s ease infinite;
+}
+
+@keyframes goldElectricFlash {
+    /* Start with the flash band off-screen to the right */
+    from { background-position: 100% 0; }
+    /* Move the flash completely across to the left */
+    to { background-position: 0% 0; }
+}
+
+@keyframes radialPulse {
+  0% {
+    background-size: 100% 100%; /* Gradient is smaller */
+  }
+  100% {
+    background-size: 150% 150%; /* Gradient expands and fades slightly */
+  }
 }
 
 .card {
@@ -47,20 +90,29 @@ body {
     border-color: rgba(79, 172, 254, 0.3);
 }
 
+/* Prevent hover animation on the active card */
+.expandable-card.active:hover {
+    transform: none;
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.2);
+}
+
+
 .expandable-card.active {
     border-color: #4facfe;
     box-shadow: 0 0 20px rgba(79, 172, 254, 0.2);
 }
 
 .card-content {
-    max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease-out;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
 }
 
-.card-content.active {
-    max-height: 1000px;
+.expandable-card.active .card-content {
+    opacity: 1;
 }
+
 
 .tab-nav {
     background-color: rgba(255, 255, 255, 0.03);
@@ -121,9 +173,40 @@ body {
 }
 
 .chevron {
-    transition: transform 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
 }
 
 .chevron.rotated {
     transform: rotate(180deg);
+}
+
+
+:focus {
+    outline: 2px solid #4facfe;
+    outline-offset: 4px;
+}
+
+@media (max-width: 640px) {
+    h1 { font-size: 2rem; }
+    .tab-button { padding: 8px 12px; font-size: 0.9rem; }
+}
+
+.bg-black-blur {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.card, .expandable-card, .tab-button {
+    transition: all 0.3s ease, transform 0.2s ease-in-out;
+}
+
+#what-is-cs {
+    scroll-margin-top: 100px; /* adjust if your header overlaps */
 }
